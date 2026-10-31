@@ -1,7 +1,0 @@
-.DS_Store
-.build/
-.buildtmp/
-dist/
-*.xcuserstate
-VITALS.xcodeproj/xcuserdata/
-VITALS.xcodeproj/project.xcworkspace/xcuserdata/
