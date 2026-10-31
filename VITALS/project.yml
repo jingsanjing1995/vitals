@@ -1,0 +1,83 @@
+name: VITALS
+options:
+  bundleIdPrefix: com.vitals
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: false
+  xcodeVersion: "26.0"
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"
+    DEVELOPMENT_TEAM: ""
+    ENABLE_HARDENED_RUNTIME: NO
+    GCC_WARN_ABOUT_RETURN_TYPE: YES
+    CLANG_WARN_DOCUMENTATION_COMMENTS: NO
+
+targets:
+  VITALS:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: Sources/Vitals/App
+      - path: Sources/Vitals/System
+      - path: Sources/Vitals/UI
+      - path: Sources/Vitals/Preview
+      - path: Sources/Widget/WidgetModel.swift
+      - path: Sources/Widget/WidgetViews.swift
+      - path: Resources/AppIcon.icns
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_NAME: VITALS
+        PRODUCT_BUNDLE_IDENTIFIER: com.vitals.desktop
+        INFOPLIST_FILE: Resources/App-Info.plist
+        GENERATE_INFOPLIST_FILE: NO
+        ENABLE_APP_SANDBOX: NO
+        COMBINE_HIDPI_IMAGES: YES
+        OTHER_LDFLAGS: "$(inherited) -framework IOKit -framework WidgetKit"
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks"
+    dependencies:
+      - target: VITALSWidget
+        embed: true
+        codeSign: true
+
+  VITALSWidget:
+    type: app-extension
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: Sources/Widget
+      - path: Sources/Vitals/System
+      - path: Sources/Vitals/UI/Theme.swift
+      - path: Sources/Vitals/UI/Gauges.swift
+    settings:
+      base:
+        PRODUCT_NAME: VITALSWidget
+        PRODUCT_BUNDLE_IDENTIFIER: com.vitals.desktop.widget
+        INFOPLIST_FILE: Resources/Widget-Info.plist
+        CODE_SIGN_ENTITLEMENTS: Resources/VITALSWidget.entitlements
+        GENERATE_INFOPLIST_FILE: NO
+        SKIP_INSTALL: YES
+        ENABLE_APP_SANDBOX: YES
+        APPLICATION_EXTENSION_API_ONLY: YES
+        OTHER_LDFLAGS: "$(inherited) -framework IOKit -framework WidgetKit"
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks"
+
+schemes:
+  VITALS:
+    build:
+      targets:
+        VITALS: all
+        VITALSWidget: all
+    run:
+      config: Debug
+    archive:
+      config: Release
